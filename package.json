@@ -1,0 +1,30 @@
+{
+  "name": "finishi-waitlist",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch --env-file=.env --import remix/node-tsx server.ts",
+    "start": "node --env-file=.env --import remix/node-tsx server.ts",
+    "test": "node --import remix/node-tsx --test",
+    "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=24.3.0"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.108.2",
+    "remix": "^3.0.0-beta.4"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "typescript": "latest"
+  },
+  "optionalDependencies": {
+    "lightningcss-darwin-arm64": "^1.29.0",
+    "lightningcss-darwin-x64": "^1.29.0",
+    "lightningcss-linux-x64-gnu": "^1.29.0",
+    "lightningcss-linux-x64-musl": "^1.29.0",
+    "lightningcss-linux-arm64-gnu": "^1.29.0",
+    "lightningcss-linux-arm64-musl": "^1.29.0"
+  }
+}
