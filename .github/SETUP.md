@@ -1,19 +1,24 @@
 # GitHub Actions Deployment Setup
 
-To enable automatic deployment to Vercel via GitHub Actions, you need to add the following secrets to your GitHub repository:
+To enable automatic deployment to Vercel via GitHub Actions, follow these steps:
 
-## Required Secrets
+## Step 1: Create a Vercel Token
 
-Go to your GitHub repository → Settings → Secrets and variables → Actions → New repository secret
+1. Go to https://vercel.com/account/tokens
+2. Click "Create Token"
+3. Name it: `github-actions-finishi-waitlist`
+4. Scope: Select your team "Finishi" (finishi1)
+5. Expiration: Choose "No Expiration" or set a long expiration
+6. Copy the token - you'll need it in the next step
 
-Add these three secrets:
+## Step 2: Add GitHub Secrets
+
+Go to: https://github.com/finishi042/finishi-waitlist/settings/secrets/actions
+
+Click "New repository secret" and add these three secrets:
 
 ### 1. VERCEL_TOKEN
-Get your Vercel token:
-```bash
-vercel token
-```
-Or visit: https://vercel.com/account/tokens
+Paste the token you created in Step 1
 
 ### 2. VERCEL_ORG_ID
 ```
@@ -25,16 +30,30 @@ team_MpB3XzzplgkRi1ilVKuGtbUi
 prj_3IOe1eKAcMkGZ2uR8nZjxwa9cDAK
 ```
 
-## Testing
+## Step 3: Test the Workflow
 
-Once you've added all three secrets, push to the main branch and the GitHub Action will automatically:
-1. Build on a Linux environment (resolving the lightningcss binary issue)
-2. Deploy to Vercel with the correct binaries
+Once all three secrets are added:
+```bash
+git add -A
+git commit -m "Add GitHub Actions deployment workflow"
+git push
+```
 
-## Disabling Vercel's Git Integration
+Check the Actions tab in GitHub to see the deployment progress.
 
-To avoid conflicts, you should disable Vercel's automatic Git deployments:
+## Step 4: Disable Vercel's Automatic Git Deployments (Optional)
+
+To avoid duplicate deployments:
 1. Go to https://vercel.com/finishi1/finishi-waitlist/settings/git
-2. Disconnect the Git repository OR disable automatic deployments
+2. Under "Git Integration", you can either:
+   - Disconnect the repository, OR
+   - Keep it connected but GitHub Actions will override automatic deployments
 
-This way, only GitHub Actions will trigger deployments.
+## How It Works
+
+The GitHub Action:
+1. Runs on a Linux x64 environment (same as Vercel's production)
+2. Installs all dependencies including the correct lightningcss binary
+3. Deploys to Vercel with the pre-built node_modules
+4. This solves the lightningcss binary mismatch issue!
+
