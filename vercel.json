@@ -1,4 +1,15 @@
 {
+  "buildCommand": "echo 'No build needed - using runtime compilation'",
+  "installCommand": "npm install && npm install --force --no-save lightningcss-linux-x64-gnu@1.32.0",
+  "framework": null,
+  "env": {
+    "SUPABASE_URL": "@supabase_url",
+    "SUPABASE_PUBLISHABLE_KEY": "@supabase_publishable_key",
+    "SUPABASE_SECRET_KEY": "@supabase_secret_key",
+    "SUPABASE_ANON_KEY": "@supabase_anon_key",
+    "SUPABASE_SERVICE_ROLE_KEY": "@supabase_service_role_key",
+    "ADMIN_SECRET": "@admin_secret"
+  },
   "rewrites": [
     { "source": "/(.*)", "destination": "/api" }
   ]
