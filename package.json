@@ -6,8 +6,7 @@
     "dev": "node --watch --env-file=.env --import remix/node-tsx server.ts",
     "start": "node --env-file=.env --import remix/node-tsx server.ts",
     "test": "node --import remix/node-tsx --test",
-    "typecheck": "tsc --noEmit",
-    "postinstall": "node scripts/postinstall.js"
+    "typecheck": "tsc --noEmit"
   },
   "engines": {
     "node": ">=20.0.0"
@@ -17,6 +16,15 @@
     "@vercel/node": "^3.2.23",
     "lightningcss": "^1.32.0",
     "remix": "^3.0.0-beta.4"
+  },
+  "optionalDependencies": {
+    "lightningcss-darwin-arm64": "^1.32.0",
+    "lightningcss-darwin-x64": "^1.32.0",
+    "lightningcss-linux-x64-gnu": "^1.32.0",
+    "lightningcss-linux-x64-musl": "^1.32.0",
+    "lightningcss-linux-arm64-gnu": "^1.32.0",
+    "lightningcss-linux-arm64-musl": "^1.32.0",
+    "lightningcss-win32-x64-msvc": "^1.32.0"
   },
   "devDependencies": {
     "@types/node": "latest",
