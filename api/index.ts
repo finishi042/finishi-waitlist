@@ -3,6 +3,9 @@ import { router } from '../app/router.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
+    // Log for debugging
+    console.log(`[${req.method}] ${req.url}`);
+    
     // Build the full URL
     const protocol = req.headers['x-forwarded-proto'] || 'https';
     const host = req.headers['x-forwarded-host'] || req.headers.host;
@@ -45,6 +48,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     res.send(body);
   } catch (error) {
     console.error('Handler error:', error);
-    res.status(500).send('Internal Server Error');
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+    res.status(500).json({ 
+      error: 'Internal Server Error',
+      message: error instanceof Error ? error.message : String(error)
+    });
   }
 }
