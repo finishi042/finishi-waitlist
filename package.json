@@ -13,18 +13,11 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.108.2",
-    "lightningcss-linux-x64-gnu": "^1.29.0",
+    "lightningcss": "^1.29.0",
     "remix": "^3.0.0-beta.4"
   },
   "devDependencies": {
     "@types/node": "latest",
     "typescript": "latest"
-  },
-  "optionalDependencies": {
-    "lightningcss-darwin-arm64": "^1.29.0",
-    "lightningcss-darwin-x64": "^1.29.0",
-    "lightningcss-linux-x64-musl": "^1.29.0",
-    "lightningcss-linux-arm64-gnu": "^1.29.0",
-    "lightningcss-linux-arm64-musl": "^1.29.0"
   }
 }
