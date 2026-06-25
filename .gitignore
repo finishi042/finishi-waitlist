@@ -5,3 +5,9 @@ tmp/
 .vercel
 .env
 .agents
+
+# Google Cloud
+.gcloudignore
+
+# Markdown files
+*.md

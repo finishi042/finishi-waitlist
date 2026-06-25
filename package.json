@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "node --watch --env-file=.env --import remix/node-tsx server.ts",
-    "start": "node --env-file=.env --import remix/node-tsx server.ts",
+    "start": "node --import remix/node-tsx server.ts",
+    "start:local": "node --env-file=.env --import remix/node-tsx server.ts",
     "test": "node --import remix/node-tsx --test",
     "typecheck": "tsc --noEmit"
   },

@@ -1,0 +1,53 @@
+# Google Cloud Run .dockerignore
+
+# Dependencies
+node_modules/
+
+# Environment files (set these in Cloud Run)
+.env
+.env.*
+
+# Git
+.git/
+.gitignore
+
+# Build outputs
+dist/
+build/
+.cache/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.agents/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Testing
+coverage/
+
+# Deployment configs
+.vercel/
+vercel.json
+
+# CI/CD
+.github/
+
+# Documentation
+*.md
+!README.md
+
+# Scripts
+scripts/
+check-deployment.sh
+
+# Database
+db/
