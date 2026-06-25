@@ -214,8 +214,23 @@ export const WaitlistDialog = clientEntry(
                         })
                         
                         try {
-                          const fetchPromise = fetch(action, { method: 'POST', body: data, signal, redirect: 'follow' })
+                          console.log('[Client] Submitting to:', action)
+                          console.log('[Client] Email:', data.get('email'))
+                          
+                          const fetchPromise = fetch(action, { 
+                            method: 'POST', 
+                            body: data, 
+                            signal, 
+                            redirect: 'follow',
+                            credentials: 'same-origin'
+                          })
                           const res = await Promise.race([fetchPromise, timeoutPromise])
+                          
+                          console.log('[Client] Response received:', {
+                            status: res.status,
+                            url: res.url,
+                            ok: res.ok
+                          })
                           
                           if (signal.aborted) return
                           
@@ -235,6 +250,8 @@ export const WaitlistDialog = clientEntry(
                           
                           handle.update()
                         } catch (err) {
+                          console.error('[Client] Fetch error:', err)
+                          
                           if (signal.aborted) return
                           
                           if (err instanceof Error && err.message === 'timeout') {

@@ -61,11 +61,15 @@ export default createController(routes, {
         let s = error.code === '23505' ? 'duplicate'
               : error.code === 'PGRST205' ? 'setup'
               : 'error'
-        return Response.redirect(new URL(`/?s=${s}`, context.request.url), 303)
+        const redirectUrl = new URL(`/?s=${s}`, context.request.url)
+        console.log('[Waitlist] Redirecting to (error):', redirectUrl.toString())
+        return Response.redirect(redirectUrl, 303)
       }
 
       console.log('[Waitlist] Successfully inserted:', data)
-      return Response.redirect(new URL('/?s=success', context.request.url), 303)
+      const successUrl = new URL('/?s=success', context.request.url)
+      console.log('[Waitlist] Redirecting to (success):', successUrl.toString())
+      return Response.redirect(successUrl, 303)
     },
 
     // ── Admin login GET ───────────────────────────────────────────────────────
