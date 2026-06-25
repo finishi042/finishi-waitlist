@@ -1,8 +1,0 @@
-{
-  "buildCommand": "echo 'No build needed - using runtime compilation'",
-  "installCommand": "npm install && npm install --force --no-save lightningcss-linux-x64-gnu@1.32.0",
-  "framework": null,
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/api" }
-  ]
-}
