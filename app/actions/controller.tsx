@@ -9,6 +9,19 @@ import { AdminLoginPage, AdminDashboardPage } from '../ui/admin-page.tsx'
 const ADMIN_SECRET = process.env.ADMIN_SECRET ?? 'changeme'
 const SESSION_COOKIE = 'finishi_admin'
 
+// Helper to build redirect URLs that respect X-Forwarded-Proto from proxies
+function getRedirectUrl(request: Request, path: string): string {
+  const url = new URL(request.url)
+  // Check if we're behind a proxy (Cloud Run, etc.)
+  const proto = request.headers.get('x-forwarded-proto')
+  if (proto) {
+    url.protocol = proto
+  }
+  url.pathname = path.split('?')[0]
+  url.search = path.includes('?') ? '?' + path.split('?')[1] : ''
+  return url.toString()
+}
+
 function isAdminAuthed(request: Request): boolean {
   let cookie = request.headers.get('cookie') ?? ''
   return cookie.includes(`${SESSION_COOKIE}=1`)
@@ -40,7 +53,7 @@ export default createController(routes, {
 
       if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         console.error('[Waitlist] Invalid email format:', email)
-        return Response.redirect(new URL('/?s=error', context.request.url), 303)
+        return Response.redirect(getRedirectUrl(context.request, '/?s=error'), 303)
       }
 
       console.log('[Waitlist] Attempting to insert email:', email)
@@ -61,21 +74,21 @@ export default createController(routes, {
         let s = error.code === '23505' ? 'duplicate'
               : error.code === 'PGRST205' ? 'setup'
               : 'error'
-        const redirectUrl = new URL(`/?s=${s}`, context.request.url)
-        console.log('[Waitlist] Redirecting to (error):', redirectUrl.toString())
+        const redirectUrl = getRedirectUrl(context.request, `/?s=${s}`)
+        console.log('[Waitlist] Redirecting to (error):', redirectUrl)
         return Response.redirect(redirectUrl, 303)
       }
 
       console.log('[Waitlist] Successfully inserted:', data)
-      const successUrl = new URL('/?s=success', context.request.url)
-      console.log('[Waitlist] Redirecting to (success):', successUrl.toString())
+      const successUrl = getRedirectUrl(context.request, '/?s=success')
+      console.log('[Waitlist] Redirecting to (success):', successUrl)
       return Response.redirect(successUrl, 303)
     },
 
     // ── Admin login GET ───────────────────────────────────────────────────────
     async adminPage(context) {
       if (isAdminAuthed(context.request)) {
-        return Response.redirect(new URL(routes.adminDashboard.href(), context.request.url), 302)
+        return Response.redirect(getRedirectUrl(context.request, routes.adminDashboard.href()), 302)
       }
       return context.render(<AdminLoginPage />)
     },
@@ -89,11 +102,11 @@ export default createController(routes, {
         return context.render(<AdminLoginPage error="Incorrect secret. Try again." />)
       }
 
-      let dashUrl = new URL(routes.adminDashboard.href(), context.request.url)
+      let dashUrl = getRedirectUrl(context.request, routes.adminDashboard.href())
       return new Response(null, {
         status: 302,
         headers: {
-          Location: dashUrl.toString(),
+          Location: dashUrl,
           'Set-Cookie': `${SESSION_COOKIE}=1; Path=/; HttpOnly; SameSite=Lax; Max-Age=86400`,
         },
       })
@@ -102,7 +115,7 @@ export default createController(routes, {
     // ── Admin dashboard ───────────────────────────────────────────────────────
     async adminDashboard(context) {
       if (!isAdminAuthed(context.request)) {
-        return Response.redirect(new URL(routes.adminPage.href(), context.request.url), 302)
+        return Response.redirect(getRedirectUrl(context.request, routes.adminPage.href()), 302)
       }
 
       let { data: entries, count } = await supabaseAdmin
@@ -128,11 +141,11 @@ export default createController(routes, {
 
     // ── Admin logout ──────────────────────────────────────────────────────────
     adminLogout(context) {
-      let loginUrl = new URL(routes.adminPage.href(), context.request.url)
+      let loginUrl = getRedirectUrl(context.request, routes.adminPage.href())
       return new Response(null, {
         status: 302,
         headers: {
-          Location: loginUrl.toString(),
+          Location: loginUrl,
           'Set-Cookie': `${SESSION_COOKIE}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0`,
         },
       })

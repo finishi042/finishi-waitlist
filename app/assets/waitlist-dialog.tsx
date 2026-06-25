@@ -229,12 +229,19 @@ export const WaitlistDialog = clientEntry(
                           console.log('[Client] Response received:', {
                             status: res.status,
                             url: res.url,
-                            ok: res.ok
+                            ok: res.ok,
+                            redirected: res.redirected
                           })
                           
                           if (signal.aborted) return
                           
                           const s = new URL(res.url).searchParams.get('s')
+                          console.log('[Client] Parsed status from URL:', {
+                            fullUrl: res.url,
+                            parsedStatus: s,
+                            willSetStatusTo: (s === 'success' || s === 'duplicate' || s === 'error' || s === 'setup') ? s : 'error'
+                          })
+                          
                           status = (s === 'success' || s === 'duplicate' || s === 'error' || s === 'setup') ? s as any : 'error'
                           
                           // Show toast notification
