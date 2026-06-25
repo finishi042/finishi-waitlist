@@ -35,11 +35,23 @@ export const WaitlistDialog = clientEntry(
   import.meta.url + '#WaitlistDialog',
   function WaitlistDialog(handle: Handle<{ action: string }>) {
     let open = false
-    let status: 'idle' | 'loading' | 'success' | 'error' | 'duplicate' | 'setup' = 'idle'
+    let status: 'idle' | 'loading' | 'success' | 'error' | 'duplicate' | 'setup' | 'timeout' = 'idle'
     let listening = false
+    let toastMessage = ''
+    let showToast = false
 
     function show() { open = true; handle.update() }
     function hide() { open = false; status = 'idle'; handle.update() }
+    
+    function displayToast(message: string, duration = 3000) {
+      toastMessage = message
+      showToast = true
+      handle.update()
+      setTimeout(() => {
+        showToast = false
+        handle.update()
+      }, duration)
+    }
 
     return () => {
       if (!listening && typeof window !== 'undefined') {
@@ -50,6 +62,35 @@ export const WaitlistDialog = clientEntry(
 
       return (
         <span>
+          {/* Toast notification */}
+          {showToast && (
+            <div
+              mix={css({
+                position: 'fixed',
+                bottom: '24px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                zIndex: 10000,
+                padding: '14px 24px',
+                borderRadius: '12px',
+                background: 'var(--surface)',
+                border: '1px solid var(--border)',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.15)',
+                fontSize: '15px',
+                fontWeight: 500,
+                color: 'var(--text-primary)',
+                maxWidth: '90vw',
+                animation: 'slideUp 0.3s ease-out',
+                '@keyframes slideUp': {
+                  from: { opacity: 0, transform: 'translate(-50%, 20px)' },
+                  to: { opacity: 1, transform: 'translate(-50%, 0)' },
+                },
+              })}
+            >
+              {toastMessage}
+            </div>
+          )}
+          
           {open && (
             <div
               mix={[
@@ -165,11 +206,46 @@ export const WaitlistDialog = clientEntry(
                         const data = new FormData(e.currentTarget as HTMLFormElement)
                         status = 'loading'
                         handle.update()
-                        const res = await fetch(action, { method: 'POST', body: data, signal, redirect: 'follow' })
-                        if (signal.aborted) return
-                        const s = new URL(res.url).searchParams.get('s')
-                        status = (s === 'success' || s === 'duplicate' || s === 'error' || s === 'setup') ? s as any : 'error'
-                        handle.update()
+                        
+                        // Create a timeout promise
+                        const timeoutMs = 10000 // 10 seconds
+                        const timeoutPromise = new Promise<never>((_, reject) => {
+                          setTimeout(() => reject(new Error('timeout')), timeoutMs)
+                        })
+                        
+                        try {
+                          const fetchPromise = fetch(action, { method: 'POST', body: data, signal, redirect: 'follow' })
+                          const res = await Promise.race([fetchPromise, timeoutPromise])
+                          
+                          if (signal.aborted) return
+                          
+                          const s = new URL(res.url).searchParams.get('s')
+                          status = (s === 'success' || s === 'duplicate' || s === 'error' || s === 'setup') ? s as any : 'error'
+                          
+                          // Show toast notification
+                          if (status === 'success') {
+                            displayToast('🎉 Successfully joined the waitlist!')
+                          } else if (status === 'duplicate') {
+                            displayToast('ℹ️ You\'re already on the list!')
+                          } else if (status === 'setup') {
+                            displayToast('❌ Database not configured', 4000)
+                          } else {
+                            displayToast('❌ Something went wrong', 4000)
+                          }
+                          
+                          handle.update()
+                        } catch (err) {
+                          if (signal.aborted) return
+                          
+                          if (err instanceof Error && err.message === 'timeout') {
+                            status = 'timeout'
+                            displayToast('⏱️ Request timed out. Please try again.', 4000)
+                          } else {
+                            status = 'error'
+                            displayToast('❌ Something went wrong', 4000)
+                          }
+                          handle.update()
+                        }
                       }),
                       css({ width: '100%', minWidth: 0, display: 'flex', flexDirection: 'column', gap: '12px' }),
                     ]}
@@ -196,9 +272,11 @@ export const WaitlistDialog = clientEntry(
                       })}
                     />
 
-                    {(status === 'error' || status === 'setup') && (
+                    {(status === 'error' || status === 'setup' || status === 'timeout') && (
                       <p mix={css({ margin: 0, padding: '10px 14px', borderRadius: '8px', background: 'var(--error-bg)', color: 'var(--error)', fontSize: '14px' })}>
-                        {status === 'setup' ? 'Database not configured yet.' : 'Something went wrong. Please try again.'}
+                        {status === 'setup' ? 'Database not configured yet.' 
+                         : status === 'timeout' ? 'Request timed out. Please try again.'
+                         : 'Something went wrong. Please try again.'}
                       </p>
                     )}
 
