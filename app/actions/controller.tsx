@@ -39,12 +39,23 @@ export default createController(routes, {
       let email = String(form.get('email') ?? '').trim().toLowerCase()
 
       if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        console.error('[Waitlist] Invalid email format:', email)
         return Response.redirect(new URL('/?s=error', context.request.url), 303)
       }
 
-      let { error } = await supabaseAdmin.from('waitlist').insert({ email })
+      console.log('[Waitlist] Attempting to insert email:', email)
+      let { data, error } = await supabaseAdmin.from('waitlist').insert({ email })
 
       if (error) {
+        // Log the full error details
+        console.error('[Waitlist] Supabase error:', {
+          message: error.message,
+          code: error.code,
+          details: error.details,
+          hint: error.hint,
+          fullError: error
+        })
+        
         // 23505 = unique violation (duplicate email)
         // PGRST205 = table not found (schema not run yet)
         let s = error.code === '23505' ? 'duplicate'
@@ -53,6 +64,7 @@ export default createController(routes, {
         return Response.redirect(new URL(`/?s=${s}`, context.request.url), 303)
       }
 
+      console.log('[Waitlist] Successfully inserted:', data)
       return Response.redirect(new URL('/?s=success', context.request.url), 303)
     },
 
