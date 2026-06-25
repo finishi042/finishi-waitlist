@@ -38,11 +38,23 @@ jobs:
       
       - name: Build and Push Docker Image
         run: |
+          # Submit build - ignore log streaming errors as build succeeds
           gcloud builds submit \
             --tag ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
             --tag ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }}:latest \
-            --timeout=10m \
-            --quiet
+            --timeout=10m || true
+          
+          # Verify the build succeeded by checking the latest build
+          LATEST_BUILD=$(gcloud builds list --limit=1 --format="value(id)")
+          BUILD_STATUS=$(gcloud builds describe $LATEST_BUILD --format="value(status)")
+          
+          if [ "$BUILD_STATUS" != "SUCCESS" ]; then
+            echo "Build failed with status: $BUILD_STATUS"
+            gcloud builds log $LATEST_BUILD
+            exit 1
+          fi
+          
+          echo "✓ Build completed successfully"
       
       - name: Deploy to Cloud Run
         run: |
