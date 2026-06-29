@@ -21,6 +21,8 @@ export function Document(handle: Handle<DocumentProps>) {
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
           <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" />
+          <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,800,900&display=swap" />
+          <style>{`h1,h2,h3,h4,h5,h6{font-family:'Satoshi',system-ui,sans-serif}`}</style>
           <script>
             {`(function() {
               try {

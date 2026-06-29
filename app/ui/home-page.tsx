@@ -21,20 +21,20 @@ function Navbar() {
         mix={css({
           maxWidth: '1100px',
           margin: '0 auto',
-          padding: '0 16px',
-          height: '56px',
+          padding: '0 clamp(12px, 2vw, 24px)',
+          height: 'clamp(44px, 6vw, 56px)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           background: 'color-mix(in srgb, var(--surface) 80%, transparent)',
-          borderRadius: '16px',
+          borderRadius: 'clamp(10px, 1.5vw, 16px)',
           border: '1px solid var(--border)',
           backdropFilter: 'blur(8px)',
           boxSizing: 'border-box',
         })}
       >
         <div mix={css({ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 })}>
-          <img src="/finishi-logo.svg" alt="Finishi" mix={css({ height: '28px', width: 'auto', maxWidth: '100%' })} />
+          <img src="/finishi-logo.svg" alt="Finishi" mix={css({ height: 'clamp(20px, 3vw, 28px)', width: 'auto', maxWidth: '100%' })} />
         </div>
         <div mix={css({ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 })}>
           <ThemeToggle />
@@ -90,6 +90,7 @@ function Hero(handle: Handle<{ status?: string; count?: number }>) {
             letterSpacing: '-0.03em',
             color: 'var(--text-primary)',
             maxWidth: '700px',
+            fontFamily: "'Satoshi', system-ui, sans-serif",
           })}
         >
           Stop Searching.{' '}
@@ -115,12 +116,12 @@ function Hero(handle: Handle<{ status?: string; count?: number }>) {
           <a
             href="#how-it-works"
             mix={css({
-              padding: '10px 22px',
+              padding: 'clamp(7px, 1vw, 10px) clamp(14px, 1.8vw, 22px)',
               borderRadius: '8px',
               border: '1.5px solid var(--border)',
               background: 'transparent',
               color: 'var(--text-primary)',
-              fontSize: '14px',
+              fontSize: 'clamp(12px, 1.2vw, 14px)',
               fontWeight: 600,
               textDecoration: 'none',
               transition: 'border-color 150ms, background 150ms',
@@ -146,10 +147,33 @@ function Hero(handle: Handle<{ status?: string; count?: number }>) {
             overflow: 'hidden',
           })}
         >
+          {/* Light mode image */}
           <img
             src="/app-mockup.png"
             alt="Finishi app dashboard"
-            mix={css({ width: '100%', height: 'auto', display: 'block' })}
+            mix={css({
+              width: '100%',
+              height: 'auto',
+              display: 'block',
+              verticalAlign: 'bottom',
+              '@media (prefers-color-scheme: dark)': { display: 'none' },
+              ':root[data-theme="dark"] &': { display: 'none' },
+              ':root[data-theme="light"] &': { display: 'block' },
+            })}
+          />
+          {/* Dark mode image */}
+          <img
+            src="/app-mockup-dark.png"
+            alt="Finishi app dashboard"
+            mix={css({
+              width: '100%',
+              height: 'auto',
+              display: 'none',
+              verticalAlign: 'bottom',
+              '@media (prefers-color-scheme: dark)': { display: 'block' },
+              ':root[data-theme="dark"] &': { display: 'block' },
+              ':root[data-theme="light"] &': { display: 'none' },
+            })}
           />
         </div>
       </section>
@@ -411,7 +435,7 @@ function CtaBanner() {
         <p mix={css({ margin: 0, fontSize: '16px', lineHeight: 1.65, color: 'rgba(255,255,255,0.85)', maxWidth: '420px' })}>
           Join learners using Finishi to build daily momentum, follow clear paths, and make real progress one step at a time.
         </p>
-        <WaitlistTrigger />
+        <WaitlistTrigger variant="inverted" />
       </div>
     </section>
   )

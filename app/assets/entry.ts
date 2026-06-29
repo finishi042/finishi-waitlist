@@ -14,6 +14,4 @@ let app = run({
   },
 })
 
-app.addEventListener('error', (event) => {
-  console.error('Remix component error:', (event as ErrorEvent).error)
-})
+app.addEventListener('error', (_event) => {})

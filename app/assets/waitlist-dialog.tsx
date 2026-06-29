@@ -47,29 +47,33 @@ const submitBtnStyle = css({
 // Trigger button
 export const WaitlistTrigger = clientEntry(
   import.meta.url + '#WaitlistTrigger',
-  function WaitlistTrigger(_handle: Handle<Record<string, never>>) {
-    return () => (
-      <button
-        type="button"
-        mix={[
-          on('click', () => { window.dispatchEvent(new CustomEvent('open-waitlist')) }),
-          css({
-            padding: '10px 22px',
-            borderRadius: '8px',
-            border: 'none',
-            background: 'var(--brand)',
-            color: '#fff',
-            fontSize: '14px',
-            fontWeight: 600,
-            cursor: 'pointer',
-            transition: 'background 150ms',
-            '&:hover': { background: 'var(--brand-dark)' },
-          }),
-        ]}
-      >
-        Join the Waitlist
-      </button>
-    )
+  function WaitlistTrigger(handle: Handle<{ variant?: 'default' | 'inverted' }>) {
+    return () => {
+      const inverted = handle.props.variant === 'inverted'
+      return (
+        <button
+          type="button"
+          mix={[
+            on('click', () => { window.dispatchEvent(new CustomEvent('open-waitlist')) }),
+            css({
+              padding: '10px 22px',
+              borderRadius: '8px',
+              border: '1.5px solid transparent',
+              background: inverted ? '#fff' : 'var(--brand)',
+              color: inverted ? 'var(--brand)' : '#fff',
+              fontSize: '14px',
+              fontWeight: 600,
+              lineHeight: 1,
+              cursor: 'pointer',
+              transition: 'background 150ms, color 150ms',
+              '&:hover': { background: inverted ? 'rgba(255,255,255,0.88)' : 'var(--brand-dark)' },
+            }),
+          ]}
+        >
+          Join the Waitlist
+        </button>
+      )
+    }
   },
 )
 

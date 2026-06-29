@@ -53,36 +53,20 @@ export default createController(routes, {
       let learningGoal = String(form.get('learning_goal') ?? '').trim() || null
 
       if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        console.error('[Waitlist] Invalid email format:', email)
         return Response.redirect(getRedirectUrl(context.request, '/?s=error'), 303)
       }
 
-      console.log('[Waitlist] Attempting to insert email:', email)
       let { data, error } = await supabaseAdmin.from('waitlist').insert({ email, learning_goal: learningGoal })
 
       if (error) {
-        // Log the full error details
-        console.error('[Waitlist] Supabase error:', {
-          message: error.message,
-          code: error.code,
-          details: error.details,
-          hint: error.hint,
-          fullError: error
-        })
-        
-        // 23505 = unique violation (duplicate email)
-        // PGRST205 = table not found (schema not run yet)
         let s = error.code === '23505' ? 'duplicate'
               : error.code === 'PGRST205' ? 'setup'
               : 'error'
         const redirectUrl = getRedirectUrl(context.request, `/?s=${s}`)
-        console.log('[Waitlist] Redirecting to (error):', redirectUrl)
         return Response.redirect(redirectUrl, 303)
       }
 
-      console.log('[Waitlist] Successfully inserted:', data)
       const successUrl = getRedirectUrl(context.request, '/?s=success')
-      console.log('[Waitlist] Redirecting to (success):', successUrl)
       return Response.redirect(successUrl, 303)
     },
 
