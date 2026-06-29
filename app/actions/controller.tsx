@@ -50,6 +50,7 @@ export default createController(routes, {
     async waitlistJoin(context) {
       let form = await context.request.formData()
       let email = String(form.get('email') ?? '').trim().toLowerCase()
+      let learningGoal = String(form.get('learning_goal') ?? '').trim() || null
 
       if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         console.error('[Waitlist] Invalid email format:', email)
@@ -57,7 +58,7 @@ export default createController(routes, {
       }
 
       console.log('[Waitlist] Attempting to insert email:', email)
-      let { data, error } = await supabaseAdmin.from('waitlist').insert({ email })
+      let { data, error } = await supabaseAdmin.from('waitlist').insert({ email, learning_goal: learningGoal })
 
       if (error) {
         // Log the full error details
@@ -120,7 +121,7 @@ export default createController(routes, {
 
       let { data: entries, count } = await supabaseAdmin
         .from('waitlist')
-        .select('id, email, created_at', { count: 'exact' })
+        .select('id, email, learning_goal, created_at', { count: 'exact' })
         .order('created_at', { ascending: false })
 
       let today = new Date()

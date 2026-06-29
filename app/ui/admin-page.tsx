@@ -146,6 +146,7 @@ interface WaitlistEntry {
   id: string
   email: string
   created_at: string
+  learning_goal?: string | null
 }
 
 export function AdminDashboardPage(
@@ -309,6 +310,7 @@ export function AdminDashboardPage(
                       >
                         <th scope="col">#</th>
                         <th scope="col">Email</th>
+                        <th scope="col">Learning Goal</th>
                         <th scope="col">Joined</th>
                         <th scope="col">Time</th>
                       </tr>
@@ -329,6 +331,9 @@ export function AdminDashboardPage(
                               {i + 1}
                             </td>
                             <td mix={css({ fontWeight: 500 })}>{entry.email}</td>
+                            <td mix={css({ color: 'var(--text-secondary) !important', fontSize: '13px', maxWidth: '200px' })}>
+                              {entry.learning_goal ?? <span mix={css({ color: 'var(--text-muted) !important', fontStyle: 'italic' })}>—</span>}
+                            </td>
                             <td mix={css({ color: 'var(--text-secondary) !important', whiteSpace: 'nowrap' })}>
                               {date.toLocaleDateString('en-US', {
                                 year: 'numeric',
@@ -408,9 +413,10 @@ function CsvDownloadButton(handle: Handle<{ entries: WaitlistEntry[] }>) {
   return () => {
     let { entries } = handle.props
 
-    let rows = ['#,Email,Joined']
+    let rows = ['#,Email,Learning Goal,Joined']
     entries.forEach((e, i) => {
-      rows.push(`${i + 1},${e.email},${new Date(e.created_at).toISOString()}`)
+      const goal = e.learning_goal ? `"${e.learning_goal.replace(/"/g, '""')}"` : ''
+      rows.push(`${i + 1},${e.email},${goal},${new Date(e.created_at).toISOString()}`)
     })
     let dataHref = `data:text/csv;charset=utf-8,${encodeURIComponent(rows.join('\n'))}`
 

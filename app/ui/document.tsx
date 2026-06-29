@@ -40,7 +40,9 @@ export function Document(handle: Handle<DocumentProps>) {
           mix={css({
             margin: 0,
             padding: 0,
-            overflowX: 'clip',
+            overflowX: 'hidden',
+            width: '100%',
+            maxWidth: '100vw',
             fontFamily: "'Inter', system-ui, sans-serif",
             WebkitFontSmoothing: 'antialiased',
             '*, *::before, *::after': { boxSizing: 'border-box' },

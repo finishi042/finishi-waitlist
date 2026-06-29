@@ -11,15 +11,17 @@ function Navbar() {
     <div
       mix={css({
         width: '100%',
-        padding: '16px 24px 0',
+        maxWidth: '100vw',
+        padding: '16px 16px 0',
         background: 'var(--hero-bg-start)',
+        boxSizing: 'border-box',
       })}
     >
       <nav
         mix={css({
           maxWidth: '1100px',
           margin: '0 auto',
-          padding: '0 20px',
+          padding: '0 16px',
           height: '56px',
           display: 'flex',
           alignItems: 'center',
@@ -28,12 +30,13 @@ function Navbar() {
           borderRadius: '16px',
           border: '1px solid var(--border)',
           backdropFilter: 'blur(8px)',
+          boxSizing: 'border-box',
         })}
       >
-        <div mix={css({ display: 'flex', alignItems: 'center', gap: '8px' })}>
-          <img src="/finishi-logo.svg" alt="Finishi" mix={css({ height: '28px', width: 'auto' })} />
+        <div mix={css({ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 })}>
+          <img src="/finishi-logo.svg" alt="Finishi" mix={css({ height: '28px', width: 'auto', maxWidth: '100%' })} />
         </div>
-        <div mix={css({ display: 'flex', alignItems: 'center', gap: '8px' })}>
+        <div mix={css({ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 })}>
           <ThemeToggle />
           <WaitlistTrigger />
         </div>
@@ -50,13 +53,15 @@ function Hero(handle: Handle<{ status?: string; count?: number }>) {
       <section
         mix={css({
           width: '100%',
+          maxWidth: '100vw',
           background: 'linear-gradient(180deg, var(--hero-bg-start) 0%, var(--hero-bg-end) 100%)',
-          padding: '40px 24px 60px',
+          padding: '40px 16px 60px',
           textAlign: 'center',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           gap: '24px',
+          boxSizing: 'border-box',
         })}
       >
         <span
@@ -162,8 +167,8 @@ function ProblemSection() {
     ]
 
     return (
-      <section mix={css({ width: '100%', padding: '80px 24px', background: 'var(--surface)' })}>
-        <div mix={css({ maxWidth: '1100px', margin: '0 auto' })}>
+      <section mix={css({ width: '100%', maxWidth: '100vw', padding: '80px 16px', background: 'var(--surface)', boxSizing: 'border-box' })}>
+        <div mix={css({ maxWidth: '1100px', margin: '0 auto', width: '100%' })}>
           <p mix={css({ margin: '0 0 12px', fontSize: '13px', fontWeight: 600, color: 'var(--brand)', textTransform: 'uppercase', letterSpacing: '0.08em' })}>
             The Problem
           </p>
@@ -218,8 +223,8 @@ function HowItWorksSection() {
     ]
 
     return (
-      <section id="how-it-works" mix={css({ width: '100%', padding: '80px 24px', background: 'var(--surface-soft)' })}>
-        <div mix={css({ maxWidth: '1100px', margin: '0 auto' })}>
+      <section id="how-it-works" mix={css({ width: '100%', maxWidth: '100vw', padding: '80px 16px', background: 'var(--surface-soft)', boxSizing: 'border-box' })}>
+        <div mix={css({ maxWidth: '1100px', margin: '0 auto', width: '100%' })}>
           <p mix={css({ margin: '0 0 12px', fontSize: '13px', fontWeight: 600, color: 'var(--brand)', textTransform: 'uppercase', letterSpacing: '0.08em' })}>
             How Finishi Works
           </p>
@@ -291,8 +296,8 @@ function CoreFeaturesSection() {
     ]
 
     return (
-      <section mix={css({ width: '100%', padding: '80px 24px', background: 'var(--surface)' })}>
-        <div mix={css({ maxWidth: '1100px', margin: '0 auto' })}>
+      <section mix={css({ width: '100%', maxWidth: '100vw', padding: '80px 16px', background: 'var(--surface)', boxSizing: 'border-box' })}>
+        <div mix={css({ maxWidth: '1100px', margin: '0 auto', width: '100%' })}>
           <p mix={css({ margin: '0 0 40px', fontSize: '13px', fontWeight: 600, color: 'var(--brand)', textTransform: 'uppercase', letterSpacing: '0.08em' })}>
             Core Features
           </p>
@@ -339,8 +344,8 @@ function AudienceSection() {
     ]
 
     return (
-      <section mix={css({ width: '100%', padding: '80px 24px', background: 'var(--surface-soft)' })}>
-        <div mix={css({ maxWidth: '1100px', margin: '0 auto' })}>
+      <section mix={css({ width: '100%', maxWidth: '100vw', padding: '80px 16px', background: 'var(--surface-soft)', boxSizing: 'border-box' })}>
+        <div mix={css({ maxWidth: '1100px', margin: '0 auto', width: '100%' })}>
           <p mix={css({ margin: '0 0 40px', fontSize: '13px', fontWeight: 600, color: 'var(--brand)', textTransform: 'uppercase', letterSpacing: '0.08em' })}>
             Who Uses Finishi
           </p>
@@ -383,19 +388,21 @@ function AudienceSection() {
 // ── CTA Banner ────────────────────────────────────────────────────────────────
 function CtaBanner() {
   return () => (
-    <section mix={css({ width: '100%', padding: '80px 24px', background: 'var(--surface)' })}>
+    <section mix={css({ width: '100%', maxWidth: '100vw', padding: '80px 16px', background: 'var(--surface)', boxSizing: 'border-box' })}>
       <div
         mix={css({
           maxWidth: '720px',
           margin: '0 auto',
           borderRadius: '20px',
           background: 'var(--brand)',
-          padding: '56px 40px',
+          padding: '56px 32px',
           textAlign: 'center',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           gap: '20px',
+          boxSizing: 'border-box',
+          '@media (max-width: 480px)': { padding: '40px 24px' },
         })}
       >
         <h2 mix={css({ margin: 0, fontSize: 'clamp(26px, 4vw, 40px)', fontWeight: 800, color: '#fff', letterSpacing: '-0.025em', lineHeight: 1.1 })}>
@@ -413,8 +420,8 @@ function CtaBanner() {
 // ── Footer ────────────────────────────────────────────────────────────────────
 function Footer() {
   return () => (
-    <footer mix={css({ width: '100%', borderTop: '1px solid var(--border)', padding: '40px 24px', background: 'var(--surface)' })}>
-      <div mix={css({ maxWidth: '1100px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '8px' })}>
+    <footer mix={css({ width: '100%', maxWidth: '100vw', borderTop: '1px solid var(--border)', padding: '40px 16px', background: 'var(--surface)', boxSizing: 'border-box' })}>
+      <div mix={css({ maxWidth: '1100px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' })}>
         <div mix={css({ display: 'flex', alignItems: 'center', justifyContent: 'space-between' })}>
           <img src="/finishi-logo.svg" alt="Finishi" mix={css({ height: '28px', width: 'auto' })} />
           <div mix={css({ display: 'flex', alignItems: 'center', gap: '12px' })}>
@@ -450,7 +457,7 @@ export function HomePage(
       <Document>
         <Navbar />
         <WaitlistDialog action={routes.waitlistJoin.href()} />
-        <main id="main-content">
+        <main id="main-content" mix={css({ width: '100%', maxWidth: '100vw', overflowX: 'hidden' })}>
           <Hero status={status} count={count} />
           <ProblemSection />
           <HowItWorksSection />
