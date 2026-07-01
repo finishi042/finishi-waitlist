@@ -150,10 +150,10 @@ interface WaitlistEntry {
 }
 
 export function AdminDashboardPage(
-  handle: Handle<{ entries: WaitlistEntry[]; total: number; todayCount: number }>,
+  handle: Handle<{ entries: WaitlistEntry[]; total: number; todayCount: number; impressions: number }>,
 ) {
   return () => {
-    let { entries, total, todayCount } = handle.props
+    let { entries, total, todayCount, impressions } = handle.props
 
     return (
       <Document title="Admin Dashboard — Finishi">
@@ -224,21 +224,18 @@ export function AdminDashboardPage(
                 gridTemplateColumns: 'repeat(2, 1fr)',
                 gap: '16px',
                 marginBottom: '32px',
-                '@media (min-width: 640px)': { gridTemplateColumns: 'repeat(3, 1fr)' },
+                '@media (min-width: 640px)': { gridTemplateColumns: 'repeat(4, 1fr)' },
               })}
             >
               <StatCard label="Total signups" value={total.toLocaleString()} />
               <StatCard label="Joined today" value={todayCount.toLocaleString()} accent />
               <StatCard
-                label="Latest signup"
-                value={
-                  entries[0]
-                    ? new Date(entries[0].created_at).toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                      })
-                    : '—'
-                }
+                label="Page views"
+                value={impressions.toLocaleString()}
+              />
+              <StatCard
+                label="Conversion rate"
+                value={impressions > 0 ? `${((total / impressions) * 100).toFixed(1)}%` : '—'}
               />
             </div>
 

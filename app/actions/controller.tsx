@@ -70,6 +70,26 @@ export default createController(routes, {
       return Response.redirect(successUrl, 303)
     },
 
+    // ── Track impression ──────────────────────────────────────────────────────
+    async trackImpression(context) {
+      try {
+        const body = await context.request.json()
+        const { url, referrer } = body
+
+        // Insert impression record
+        await supabaseAdmin.from('impressions').insert({
+          page_url: url,
+          referrer: referrer || null,
+        })
+
+        return new Response(null, { status: 204 })
+      } catch (error) {
+        console.error('[Impression] Failed to track:', error)
+        // Return success anyway to not block client
+        return new Response(null, { status: 204 })
+      }
+    },
+
     // ── Admin login GET ───────────────────────────────────────────────────────
     async adminPage(context) {
       if (isAdminAuthed(context.request)) {
@@ -108,6 +128,11 @@ export default createController(routes, {
         .select('id, email, learning_goal, created_at', { count: 'exact' })
         .order('created_at', { ascending: false })
 
+      // Get total impressions count
+      let { count: impressionsCount } = await supabaseAdmin
+        .from('impressions')
+        .select('id', { count: 'exact', head: true })
+
       let today = new Date()
       today.setHours(0, 0, 0, 0)
 
@@ -120,6 +145,7 @@ export default createController(routes, {
           entries={entries ?? []}
           total={count ?? 0}
           todayCount={todayCount}
+          impressions={impressionsCount ?? 0}
         />,
       )
     },

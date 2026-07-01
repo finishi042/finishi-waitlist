@@ -4,6 +4,7 @@ import { routes } from '../routes.ts'
 import { Document } from './document.tsx'
 import { WaitlistDialog, WaitlistTrigger } from '../assets/waitlist-dialog.tsx'
 import { ThemeToggle } from '../assets/theme-toggle.tsx'
+import { ImpressionTracker } from '../assets/track-impression.tsx'
 
 // ── Navbar ────────────────────────────────────────────────────────────────────
 function Navbar() {
@@ -479,6 +480,7 @@ export function HomePage(
     let { status, count } = handle.props
     return (
       <Document>
+        <ImpressionTracker endpoint={routes.trackImpression.href()} />
         <Navbar />
         <WaitlistDialog action={routes.waitlistJoin.href()} />
         <main id="main-content" mix={css({ width: '100%', maxWidth: '100vw', overflowX: 'hidden' })}>
